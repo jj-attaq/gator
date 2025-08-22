@@ -1,27 +1,45 @@
 package main
 
 import (
-	"fmt"
 	"log"
+	"os"
 
 	"github.com/jj-attaq/gator/internal/config"
 )
 
 func main() {
+	// Initiate and register commands
+	var cmds commands
+	cmds.registeredCommands = make(map[string]func(*state, command) error)
+
+	cmds.register("login", handlerLogin)
+
+	// Set initial state and config
+	s := state{}
 	cfg, err := config.Read()
 	if err != nil {
 		log.Fatalf("error reading config: %v", err)
 	}
-	fmt.Printf("Read config: %+v\n", cfg)
 
-	err = cfg.SetUser("jj-attaq")
-	if err != nil {
-		log.Fatalf("couldn't set current user: %v", err)
+	s.Config = &cfg
+
+	// Get arguemnts
+	args := os.Args
+	if len(args) < 2 {
+		log.Fatal("ERROR: command and arguements required")
 	}
 
-	cfg, err = config.Read()
-	if err != nil {
-		log.Fatalf("error reading config: %v", err)
+	commandName := args[1]
+	commandArg := args[2:]
+
+	// Use arguments to create commands
+	cmd := command{
+		name:      commandName,
+		arguments: commandArg,
 	}
-	fmt.Printf("Read config again: %+v\n", cfg)
+
+	// Run command
+	if err := cmds.run(&s, cmd); err != nil {
+		log.Fatal(err)
+	}
 }

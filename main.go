@@ -7,26 +7,31 @@ import (
 	"github.com/jj-attaq/gator/internal/config"
 )
 
+type state struct {
+	Config *config.Config
+}
+
 func main() {
-	// Initiate and register commands
-	var cmds commands
-	cmds.registeredCommands = make(map[string]func(*state, command) error)
-
-	cmds.register("login", handlerLogin)
-
 	// Set initial state and config
-	s := state{}
 	cfg, err := config.Read()
 	if err != nil {
 		log.Fatalf("error reading config: %v", err)
 	}
+	programState := &state{
+		Config: &cfg,
+	}
 
-	s.Config = &cfg
+	// Initiate and register commands
+	cmds := commands{
+		registeredCommands: make(map[string]func(*state, command) error),
+	}
+
+	cmds.register("login", handlerLogin)
 
 	// Get arguemnts
 	args := os.Args
 	if len(args) < 2 {
-		log.Fatal("ERROR: command and arguements required")
+		log.Fatal("Usage: cli <command> [args...]")
 	}
 
 	commandName := args[1]
@@ -34,12 +39,12 @@ func main() {
 
 	// Use arguments to create commands
 	cmd := command{
-		name:      commandName,
-		arguments: commandArg,
+		Name: commandName,
+		Args: commandArg,
 	}
 
 	// Run command
-	if err := cmds.run(&s, cmd); err != nil {
+	if err := cmds.run(programState, cmd); err != nil {
 		log.Fatal(err)
 	}
 }

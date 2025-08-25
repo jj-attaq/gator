@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 )
 
 type command struct {
@@ -20,6 +21,8 @@ func (c *commands) run(s *state, cmd command) error {
 	}
 
 	if err := runCmd(s, cmd); err != nil {
+		// exit code 1 on command error
+		log.Fatal(err)
 		return err
 	}
 	return nil

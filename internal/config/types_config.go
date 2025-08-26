@@ -35,19 +35,6 @@ func Read() (Config, error) {
 	}
 
 	return cfg, nil
-	//
-	// contents, err := os.ReadFile(fileName)
-	// if err != nil {
-	// 	return Config{}, err
-	// }
-	//
-	// var cfg Config
-	//
-	// if err := json.Unmarshal(contents, &cfg); err != nil {
-	// 	return Config{}, err
-	// }
-	//
-	// return cfg, nil
 }
 
 func (cfg *Config) SetUser(userName string) error {

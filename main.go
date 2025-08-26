@@ -34,8 +34,6 @@ func main() {
 	dbQueries := database.New(db)
 	programState.db = dbQueries
 
-	// fmt.Println(cfg)
-
 	// Initiate and register commands
 	cmds := commands{
 		registeredCommands: make(map[string]func(*state, command) error),

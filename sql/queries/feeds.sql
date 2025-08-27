@@ -9,3 +9,13 @@ VALUES (
     $6
 )
 RETURNING *;
+
+-- name: ListFeeds :many
+SELECT * FROM feeds;
+
+-- name: GetFeedAndCreator :many
+SELECT feeds.name, feeds.url, users.name AS user_name
+FROM feeds
+INNER JOIN users
+ON feeds.user_id = users.id
+ORDER BY feeds.created_at ASC;

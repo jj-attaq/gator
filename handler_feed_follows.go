@@ -11,7 +11,7 @@ import (
 
 func handlerFollow(s *state, cmd command, user database.User) error {
 	if len(cmd.Args) > 1 {
-		return fmt.Errorf("usage %s: follow <url>", cmd.Name)
+		return fmt.Errorf("usage: %s <url>", cmd.Name)
 	}
 	url := cmd.Args[0]
 
@@ -64,7 +64,7 @@ func handlerFollowing(s *state, cmd command, user database.User) error {
 
 func handlerUnfollow(s *state, cmd command, user database.User) error {
 	if len(cmd.Args) != 1 {
-		return fmt.Errorf("usage %s: unfollow <url>", cmd.Name)
+		return fmt.Errorf("usage: %s <url>", cmd.Name)
 	}
 	url := cmd.Args[0]
 

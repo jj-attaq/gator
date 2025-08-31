@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"html"
 	"net/http"
+	"strings"
 )
 
 type RSSFeed struct {
@@ -13,7 +14,7 @@ type RSSFeed struct {
 		Title       string    `xml:"title"`
 		Link        string    `xml:"link"`
 		Description string    `xml:"description"`
-		Item        []RSSItem `xml:"item"`
+		Items       []RSSItem `xml:"item"`
 	} `xml:"channel"`
 }
 
@@ -43,9 +44,17 @@ func fetchFeed(ctx context.Context, feedURL string) (*RSSFeed, error) {
 		return nil, fmt.Errorf("Unexpected status code: %d\n", resp.StatusCode)
 	}
 
+	// // when running agg:
+	// // Error: Unexpected content type: application/rss+xml; charset=utf-8
+	// contentType := resp.Header.Get("Content-Type")
+	// if contentType != "application/xml" && contentType != "text/xml" {
+	// 	return nil, fmt.Errorf("Unexpected content type: %s\n", contentType)
+	// }
 	contentType := resp.Header.Get("Content-Type")
-	if contentType != "application/xml" && contentType != "text/xml" {
-		return nil, fmt.Errorf("Unexpected content type: %s\n", contentType)
+	if !strings.Contains(contentType, "application/xml") &&
+		!strings.Contains(contentType, "text/xml") &&
+		!strings.Contains(contentType, "application/rss+xml") {
+		return nil, fmt.Errorf("unexpected content type: %s", contentType)
 	}
 
 	var feed RSSFeed
@@ -63,11 +72,11 @@ func formatFeed(feed RSSFeed) RSSFeed {
 	feed.Channel.Title = html.UnescapeString(feed.Channel.Title)
 	feed.Channel.Description = html.UnescapeString(feed.Channel.Description)
 
-	items := feed.Channel.Item
-	for i, el := range items {
-		el.Title = html.UnescapeString(el.Title)
-		el.Description = html.UnescapeString(el.Description)
-		items[i] = el
+	items := feed.Channel.Items
+	for i, item := range items {
+		item.Title = html.UnescapeString(item.Title)
+		item.Description = html.UnescapeString(item.Description)
+		items[i] = item
 		// items[i].Title = html.UnescapeString(el.Title)
 		// items[i].Description = html.UnescapeString(el.Description)
 	}

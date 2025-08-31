@@ -17,7 +17,7 @@ type commands struct {
 func (c *commands) run(s *state, cmd command) error {
 	runCmd, exists := c.registeredCommands[cmd.Name]
 	if !exists {
-		return fmt.Errorf("ERROR: '%s' is not a registered command\n", cmd.Name)
+		return fmt.Errorf("Error: '%s' is not a registered command\n", cmd.Name)
 	}
 
 	if err := runCmd(s, cmd); err != nil {

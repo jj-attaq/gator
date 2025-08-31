@@ -45,6 +45,7 @@ func main() {
 	cmds.register("users", handlerListUsers)
 	cmds.register("agg", handlerAgg)
 	cmds.register("feeds", handlerListFeeds)
+	// Requires Login
 	cmds.register("addfeed", middlewareLoggedIn(handlerAddFeed))
 	cmds.register("follow", middlewareLoggedIn(handlerFollow))
 	cmds.register("following", middlewareLoggedIn(handlerFollowing))

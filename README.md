@@ -34,11 +34,11 @@ Example: `gator agg 1m`
 
 The program will scrape for feeds every minute.
 
-#### AddFeed
+#### AddFeed:
 
     gator addfeed <name of feed> <url>
 
-#### Browse 
+#### Browse: 
 
     gator browse <number of posts to list>
 

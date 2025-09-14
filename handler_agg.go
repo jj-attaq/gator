@@ -134,6 +134,7 @@ func handlerBrowse(s *state, cmd command, user database.User) error {
 	if err != nil {
 		return fmt.Errorf("couldn't get posts: %w", err)
 	}
+	fmt.Printf("Found %d posts for user %s:\n", len(posts), user.Name)
 
 	for _, post := range posts {
 		printPost(post)
@@ -143,11 +144,11 @@ func handlerBrowse(s *state, cmd command, user database.User) error {
 }
 
 func printPost(post database.GetPostsForUserRow) {
-	fmt.Printf("* ID:            %s\n", post.ID)
-	fmt.Printf("* Title:         %s\n", post.Title)
-	fmt.Printf("* Published At:  %s\n", post.PublishedAt.Time)
-	fmt.Printf("* URL:           %s\n", post.Url)
-	fmt.Println()
+	fmt.Printf("%s from %s\n", post.PublishedAt.Time.Format("Mon Jan 2"), post.FeedName)
+	fmt.Printf("--- %s ---\n", post.Title)
+	fmt.Printf("    %v\n", post.Description.String)
+	fmt.Printf("Link: %s\n", post.Url)
+	fmt.Println("=====================================")
 }
 
 func parsePubTime(s string) (time.Time, error) {
